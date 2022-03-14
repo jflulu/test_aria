@@ -43,6 +43,6 @@ jobs:
           
       - name: dl
         run: |
-          aria2c  --seed-time=0  --dht-file-path=dht.dat magnet:?xt=urn:btih:2c7c1870bc94adcb85ce8dde7c3db75021c866ff&dn=[javdb.com]ssis-256-4k
+          aria2c  --seed-time=0  --dht-file-path=dht.dat "magnet:?xt=urn:btih:2c7c1870bc94adcb85ce8dde7c3db75021c866ff&dn=[javdb.com]ssis-256-4k"
           
       - run: rclone copy --progress . phys://aria_result
