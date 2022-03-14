@@ -20,7 +20,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      seed: magnet:?xt=urn:btih:71b3a19286e76e000e6ff7f8b84cba01a809029f&dn=[javdb.com]PRED-386
+      seed: magnet:?xt=urn:btih:a06926b874c98f138dc3867c3a36f5031453b8d5&dn=[javdb.com]ABW-204
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
