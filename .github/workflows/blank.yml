@@ -28,18 +28,21 @@ jobs:
       # Runs a single command using the runners shell
       - name:  Install package
         run: sudo snap install aria2c
+        
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
 
       # Runs a set of commands using the runners shell
       - name: show Aria2c info
         run: |
           aria2c -v
           
+      - run: rclone copy --progress phys://aria/dht.dat .
+          
       - name: dl
         run: |
           aria2c  --seed-time=0  --dht-file-path=dht.dat magnet:?xt=urn:btih:2c7c1870bc94adcb85ce8dde7c3db75021c866ff&dn=[javdb.com]ssis-256-4k
           
-      - name: Setup Rclone
-        uses: AnimMouse/setup-rclone@v1
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
       - run: rclone copy --progress . phys://aria_result
