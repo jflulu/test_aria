@@ -19,7 +19,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    env:
+      seed: magnet:?xt=urn:btih:529c1e2ec794b8628b0e430a2107f68ef231911c&dn=[javdb.com]ABW-204
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -43,6 +44,6 @@ jobs:
           
       - name: dl
         run: |
-          aria2c  --seed-time=0  --dht-file-path=dht.dat "magnet:?xt=urn:btih:2c7c1870bc94adcb85ce8dde7c3db75021c866ff&dn=[javdb.com]ssis-256-4k"
+          aria2c  --seed-time=0  --dht-file-path=dht.dat "$seed"
           
       - run: rclone copy --progress . phys://aria_result
