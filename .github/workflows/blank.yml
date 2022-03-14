@@ -42,4 +42,4 @@ jobs:
         uses: AnimMouse/setup-rclone@v1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
-      - run: rclone copy --progress . phys://rsync
+      - run: rclone copy --progress . phys://aria_result
