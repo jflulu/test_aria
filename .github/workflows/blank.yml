@@ -23,8 +23,28 @@ jobs:
     if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "HERE"
       - run: 'echo "seed: ${{ github.event.client_payload.seed }}"'
+ 
+      - name:  Install package
+        run: sudo snap install aria2c
+        
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      # Runs a set of commands using the runners shell
+      - name: show Aria2c info
+        run: |
+          aria2c -v
+          
+      - run: rclone copy --progress phys://aria/dht.dat .
+          
+      - name: dl
+        run: |
+          aria2c  --seed-time=0  --dht-file-path=dht.dat "$seed"
+          
+      - run: rclone copy --progress . phys://aria_result
       
   build:
     if: github.event_name == 'closed'
