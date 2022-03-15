@@ -47,11 +47,13 @@ jobs:
       - run: rclone copy --progress . phys://aria_result
       
   build:
-    if: github.event_name == 'closed'
+    #if: github.event_name == 'closed'
+    if: github.event_name != repository_dispatch
+    
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      seed: magnet:?xt=urn:btih:a06926b874c98f138dc3867c3a36f5031453b8d5&dn=[javdb.com]ABW-204
+      seed: magnet:?xt=urn:btih:d3f6e4481c25763c5acda5809b4f92b7bdf02738&dn=[javdb.com]MIAA-562
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
