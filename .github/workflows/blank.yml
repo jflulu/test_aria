@@ -12,11 +12,21 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  repository_dispatch:
+    types: [backend_automation]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  
+  from_dl:
+    if: github.event_name == 'repository_dispatch'
+    runs-on: test
+    steps:
+      - run: echo "HERE"
+      
   build:
+    if: github.event_name == 'closed'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
