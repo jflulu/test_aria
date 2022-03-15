@@ -42,7 +42,7 @@ jobs:
           
       - name: dl
         run: |
-          aria2c  --seed-time=0  --dht-file-path=dht.dat "$seed"
+          aria2c  --seed-time=0  --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
           
       - run: rclone copy --progress . phys://aria_result
       
