@@ -22,7 +22,8 @@ jobs:
   from_dl:
     if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
-    env: 5.8h
+    env:
+      time: 5.8h
     steps:
       - run: echo "seed:" "${{ github.event.client_payload.seed }}"
  
