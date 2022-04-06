@@ -78,6 +78,7 @@ jobs:
       - run: rclone copy --progress phys://aria/dht.dat .
           
       - name: dl
+        continue-on-error: true
         run: |
           timeout --preserve-status 1m aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
           
