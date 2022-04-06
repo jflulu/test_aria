@@ -22,6 +22,7 @@ jobs:
   from_dl:
     if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
+    env: 5.8h
     steps:
       - run: echo "seed:" "${{ github.event.client_payload.seed }}"
  
@@ -41,14 +42,59 @@ jobs:
       - run: rclone copy --progress phys://aria/dht.dat .
           
       - name: dl
-        continue-on-error: true
         run: |
-          aria2c  --seed-time=0  --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} ria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
           
-      - run: rclone copy --progress . phys://aria_result
+      - name: ul
+        if: success()
+        run: rclone copy --progress . phys://aria_result
       
   build:
-    #if: github.event_name == 'closed'
+    if: github.event_name == 'closed'
     #if: github.event_name != 'repository_dispatch'
     
     # The type of runner that the job will run on
