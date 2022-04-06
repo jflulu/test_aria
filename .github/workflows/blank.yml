@@ -54,8 +54,8 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      seed: magnet:?xt=urn:btih:d3f6e4481c25763c5acda5809b4f92b7bdf02738&dn=[javdb.com]MIAA-562
-      time: 1m
+      seed: magnet:?xt=urn:btih:5213fc38ec70157593398b74da217a1adaad70aa&dn=[javdb.com]midv-058
+      time: 5m
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
