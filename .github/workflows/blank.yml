@@ -79,13 +79,53 @@ jobs:
       - run: rclone copy --progress phys://aria/dht.dat .
           
       - name: dl
-        id: dl1
         run: |
           timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
       - name: dl
-        id: dl2
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
+        if: failure()
+        run: |
+          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+      - name: dl
         if: failure()
         run: |
           timeout --preserve-status ${{env.time}} aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
           
-      - run: rclone copy --progress . phys://aria_result
+      - name: ul
+        if: success()
+        run: rclone copy --progress . phys://aria_result
