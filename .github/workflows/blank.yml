@@ -92,7 +92,7 @@ jobs:
           
       - name: ul
         if: success()
-        run: rclone copy --progress . phys://aria_result
+        run: rclone copy  --drive-upload-cutoff 1000T  --progress . phys://aria_result
       
   build:
     if: github.event_name == 'closed'
