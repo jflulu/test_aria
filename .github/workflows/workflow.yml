@@ -32,66 +32,56 @@ jobs:
           # s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} ls s3://aria-config
           s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp s3://aria-config/dht.dat .
 
-  dl:
+      - name:  Install package
+        run: sudo snap install aria2c
+        
+      # Runs a set of commands using the runners shell
+      - name: show Aria2c info
+        run: |
+          aria2c -v
+
+  set_seed:
     if: github.event_name == 'repository_dispatch'
-    runs-on: ubuntu-latest
-    env:
-      time: 5.5h
-    steps:
-      - run: echo "seed:" "${{ github.event.client_payload.seed }}"
- 
-      - name:  Install package
-        run: sudo snap install aria2c
-        
-      - name: Setup Rclone
-        uses: AnimMouse/setup-rclone@v1
+    needs: init
+    steps: 
+      - name: dl
+        uses: jflulu/dl@v1
         with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+          seed: "${{ github.event.client_payload.seed }}"
 
-      # Runs a set of commands using the runners shell
-      - name: show Aria2c info
-        run: |
-          aria2c -v
-          
-      - run: rclone copy --progress phys://aria/dht.dat .
-          
-      - name: dl
-        run: |
-          timeout --preserve-status ${{env.time}} aria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ github.event.client_payload.seed }}"
-          
-      - name: ul
-        if: success()
-        run: rclone copy  --drive-upload-cutoff 1000T  --progress . phys://aria_result
-      
   test:
-    #if: github.event_name == 'closed'
-    if: github.event_name != 'repository_dispatch'
-    
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    env:
-      seed: magnet:?xt=urn:btih:d984f67af9917b214cd8b6048ab5624c7df6a07a&tr=https%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    if: github.event_name == 'repository_dispatch'
+    needs: init
+    steps: 
+      - name: dl
+        uses: jflulu/dl@v1
+        with:
+          seed: magnet:?xt=urn:btih:d984f67af9917b214cd8b6048ab5624c7df6a07a&tr=https%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce
+      
+            # test:
+            #   #if: github.event_name == 'closed'
+            #   if: github.event_name != 'repository_dispatch'
+            #   with: 
+            #     seed: magnet:?xt=urn:btih:d984f67af9917b214cd8b6048ab5624c7df6a07a&tr=https%3A%2F%2Facademictorrents.com%2Fannounce.php&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce
+            #   # Steps represent a sequence of tasks that will be executed as part of the job
+            #   steps:
+            #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            #     # - uses: actions/checkout@v2
+            #     - run: echo $seed
+
+            #     - name: dl
+            #       run: |
+            #         aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+
+  dl:
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # - uses: actions/checkout@v2
-      - run: echo $seed
-
-      # Prepare buckets
-
-      # Runs a single command using the runners shell
-      - name:  Install package
-        run: sudo snap install aria2c
-        
-      # Runs a set of commands using the runners shell
-      - name: show Aria2c info
-        run: |
-          aria2c -v
-          
+      - run: echo "seed:" "${{ inputs.seed }}"
       - name: dl
         run: |
-          aria2c  --seed-time=0  -c --dht-file-path=dht.dat "$seed"
+          timeout aria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ inputs.seed }}"
           
+  final: 
+    steps:
       - name: Upload file to bucket
         if: success()
         run: 
