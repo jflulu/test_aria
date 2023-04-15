@@ -19,20 +19,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   
-  init: 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: derekn/s5cmd-action@v1
-        with:
-          version: 2.1.0-beta.1
-      - name: Init
-        run: |
-          echo ${{secrets.INIT}} | base64 -d > init.cred
-          echo ${{secrets.OUTPUT}} | base64 -d > output.cred
-          # s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} ls s3://aria-config
-          s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp s3://aria-config/dht.dat .
-
-  dl:
+  from_dl:
     if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     env:
@@ -63,30 +50,35 @@ jobs:
         if: success()
         run: rclone copy  --drive-upload-cutoff 1000T  --progress . phys://aria_result
       
-  test:
+  build:
     #if: github.event_name == 'closed'
     if: github.event_name != 'repository_dispatch'
     
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      seed: magnet:?xt=urn:btih:e7d1abae2d1707f19e566e776dfc1a63d2d0ce45&dn=debian-11.1.0-amd64-netinst.iso
+      seed: magnet:?xt=urn:btih:13ce25cb9f169fcf06b4f1ec1f0deb1ef2cd2d6d&dn=[javdb.com]MIDV-058
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       # - uses: actions/checkout@v2
       - run: echo $seed
 
-      # Prepare buckets
-
       # Runs a single command using the runners shell
       - name:  Install package
         run: sudo snap install aria2c
         
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
       # Runs a set of commands using the runners shell
       - name: show Aria2c info
         run: |
           aria2c -v
+          
+      - run: rclone copy --progress phys://aria/dht.dat .
           
       - name: dl
         run: |
@@ -94,7 +86,12 @@ jobs:
           
       - name: Upload file to bucket
         if: success()
-        run: 
-          s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp dht.dat s3://aria-config/dht.dat 
-          s5cmd --credentials-file output.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp --exclude dht.dat * s3://aria-config/
+        uses: zdurham/s3-upload-github-action@master
+        env:
+          FILE: "*"
+          AWS_REGION: 'us-east-1'
+          S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          S3_KEY: ${{ secrets.S3_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
