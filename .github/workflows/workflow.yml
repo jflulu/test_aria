@@ -57,22 +57,19 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      seed: magnet:?xt=urn:btih:13ce25cb9f169fcf06b4f1ec1f0deb1ef2cd2d6d&dn=[javdb.com]MIDV-058
+      seed: magnet:?xt=urn:btih:e7d1abae2d1707f19e566e776dfc1a63d2d0ce45&dn=debian-11.1.0-amd64-netinst.iso
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       # - uses: actions/checkout@v2
       - run: echo $seed
 
+      # Prepare buckets
+
       # Runs a single command using the runners shell
       - name:  Install package
         run: sudo snap install aria2c
         
-      - name: Setup Rclone
-        uses: AnimMouse/setup-rclone@v1
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
-
       # Runs a set of commands using the runners shell
       - name: show Aria2c info
         run: |
@@ -94,4 +91,22 @@ jobs:
           S3_KEY: ${{ secrets.S3_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  lab: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: derekn/s5cmd-action@v1
+        with:
+          version: 2.1.0-beta.1
+      - name: Init
+        run: |
+          echo ${{secrets.INIT}} | base64 -d > init.cred
+          # source ./init.cred
+          # echo $aws_access_key_id
+          # echo $aws_secret_access_key
+          cat init.cred
+          # s5cmd --credentials-file init.cred --endpoint-url https://s3.us-west-004.backblazeb2.com/ ls s3://aria-config
+          s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} ls s3://aria-config
+
+
 
