@@ -27,6 +27,13 @@ jobs:
       - uses: derekn/s5cmd-action@v1
         with:
           version: 2.1.0-beta.1
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+
       - name: Init
         run: |
           echo ${{secrets.INIT}} | base64 -d > init.cred
