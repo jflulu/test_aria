@@ -67,5 +67,5 @@ jobs:
         run: |
           s5cmd --credentials-file init.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp dht.dat s3://aria-config/dht.dat 
           # s5cmd --credentials-file output.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp --exclude "dht.dat"  --exclude "*.cred" "*" s3://aria-output
-          s5cmd --credentials-file output.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp --exclude "dht.dat"  --exclude "*.cred" --exclude "三 上 悠 亚 想 要 跟 你 决 胜 负.mp4" --exclude  "台 妹 子 線 上 現 場 直 播 各 式 花 式 表 演.mp4" --exclude  "社 區 最 新 情 報.mp4" "苍 老 师 强 力 推 荐.mp4" --exclude "*.html" --exclude "*.gif" --exclude "*.url" --exclude "*.txt" "*" s3://aria-output
+          s5cmd --credentials-file output.cred --endpoint-url ${{ secrets.S3_ENDPOINT_URL }} cp --exclude "dht.dat"  --exclude "*.cred" --exclude "三 上 悠 亚 想 要 跟 你 决 胜 负.mp4" --exclude  "台 妹 子 線 上 現 場 直 播 各 式 花 式 表 演.mp4" --exclude  "社 區 最 新 情 報.mp4" --exclude "苍 老 师 强 力 推 荐.mp4" --exclude "*.html" --exclude "*.gif" --exclude "*.url" --exclude "*.txt" "*" s3://aria-output
 
