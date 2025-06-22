@@ -58,9 +58,9 @@ jobs:
         run: |
           aria2c  --seed-time=0 -c --dht-file-path=dht.dat "${{ env.seed }}"
 
-      - name: rename to upper case
-        run: |
-          for f in * ; do mv -- "$f" "$(tr [:lower:] [:upper:] <<< "$f")" ; done
+      # - name: rename to upper case
+      #  run: |
+      #    for f in * ; do mv -- "$f" "$(tr [:lower:] [:upper:] <<< "$f")" ; done
           
       - name: Upload file to bucket
         if: success()
